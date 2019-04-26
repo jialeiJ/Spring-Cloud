@@ -1,0 +1,49 @@
+#配置端口
+server: 
+  port: 9095
+#配置服务名
+spring:
+  application:
+    name: jaray-route-center
+#  security: 
+#    user: 
+#      name: admin
+#      password: 123456
+  cloud: 
+    gateway: 
+      discovery: 
+        locator: 
+          #http://route_ip:route_port/SPRING-CLOUD-CONSUMER/hello/jaray(服务名大写)
+          enabled: true
+      
+#配置注册中心
+eureka: 
+  instance:
+#    metadata-map:
+#      user.name: ${spring.security.user.name}
+#      user.password: ${spring.security.user.password}
+    # 使用ip地址注册到eureka server
+    prefer-ip-address: true  
+    # 在eureka server中看到的status显示为具体的ip地址和port(在此设置随机端口)
+    instance-id: ${spring.cloud.client.ip-address}:${server.port} 
+    
+    lease-renewal-interval-in-seconds: 10
+    health-check-url-path: /actuator/health   #2.0以后actuator的地址发生了变化
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    registry-fetch-interval-seconds: 5
+    service-url: 
+      defaultZone: http://localhost:8761/eureka/,http://127.0.0.1:8762/eureka/
+      
+      
+# 2.0开始，actuator默认不开放，所以要设置为开放
+management: 
+  endpoints: 
+    web: 
+      exposure: 
+        include: "*"
+  endpoint: 
+    health: 
+      show-details: ALWAYS
+    
