@@ -1,0 +1,35 @@
+#配置中心高可用服务名
+spring: 
+  cloud: 
+    config: 
+      #name: jaray-config   name存在后不能从配置中心获取文件
+      profile: dev
+      label: master
+      discovery: 
+        enabled: true
+        service-id: jaray-config-center   #通过服务名读取配置文件实现高可用
+# 链路追踪    
+  zipkin:
+    #内存方式配置，不需要
+    #base-url: http://localhost:9411   #http方式提交到zipkin
+    #日志发送队列类型
+    sender:
+      type: rabbit  # 切换到rabbitmq
+  sleuth:
+    sampler:
+      #应采样的请求的概率。 例如。 应该对1.0  -  100％的请求进行抽样。 精度仅为整数（即不支持0.1％的迹线）。
+      probability: 1.0
+  #发送的队列名称，默认zipkin，正常情况不要修改因为zipkin-server默认监控队列也是zipkin
+  rabbitmq: 
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    listener: # 这里配置了重试策略
+      direct:
+        retry:
+          enabled: true
+      simple:
+        retry:
+          enabled: true
+    
