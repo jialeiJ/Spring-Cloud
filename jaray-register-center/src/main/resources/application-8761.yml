@@ -1,0 +1,32 @@
+#设置项目名称
+spring: 
+  application: 
+    name: jaray-register-center
+    
+#设置项目端口
+server: 
+  port: 8761
+  
+eureka: 
+  server: 
+    peer-node-read-timeout-ms: 1000 #SocketTimeoutException: Read timed out
+  instance: 
+    #需要配置hosts文件(C:\Windows\System32\drivers\etc\hosts---127.0.0.1       master slave)
+    hostname: localhost
+    appname: ${spring.application.name}
+    # 使用ip地址注册到eureka server(神坑---unavailable-replicas)
+    #prefer-ip-address: true
+    # 在eureka server中看到的status显示为具体的ip地址和port
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+  client: 
+    register-with-eureka: false
+    fetch-registry: false
+    #设置与Eureka Server交互的地址，查询服务和注册服务都需要依赖这个地址。默认是http://localhost:8761/eureka ；多个地址可使用 , 分隔。
+    service-url: 
+      defaultZone: http://localhost:8761/eureka/,http://127.0.0.1:8762/eureka/
+      
+#启用shutdown 
+#endpoints.shutdown.enabled=true 
+#禁用密码验证 
+#endpoints.shutdown.sensitive=false
+ 
