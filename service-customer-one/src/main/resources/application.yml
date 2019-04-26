@@ -1,0 +1,53 @@
+#配置端口
+server: 
+  port: 5001
+#配置服务名
+spring:
+  application:
+    name: service-customer-one
+#配置注册中心
+eureka:
+  instance: 
+    # 使用ip地址注册到eureka server
+    prefer-ip-address: true  
+    # 在eureka server中看到的status显示为具体的ip地址和port(在此设置随机端口)
+    instance-id: ${spring.cloud.client.ip-address}:${server.port} 
+    
+    lease-renewal-interval-in-seconds: 10
+    health-check-url-path: /actuator/health   #2.0以后actuator的地址发生了变化
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    registry-fetch-interval-seconds: 5
+    service-url: 
+      defaultZone: http://localhost:8761/eureka/,http://127.0.0.1:8762/eureka/
+
+# 2.0开始，actuator默认不开放，所以要设置为开放
+management: 
+  endpoints: 
+    web: 
+      exposure: 
+        include: "*"
+      cors:
+        allowed-origins: "*"
+        allowed-methods: "*"
+  endpoint: 
+    health: 
+      show-details: ALWAYS
+      
+#打开断路器(开启熔断)
+feign: 
+  client:
+    config:
+      remote-service:            #服务名，default为所有服务
+        connectTimeout: 10000
+        readTimeout: 12000
+        logger-level: full
+  # feign启用hystrix，才能熔断、降级
+  hystrix:
+    enabled: true
+  #禁用默认的http，启用okhttp
+  httpclient:
+    enabled: false
+  okhttp:
+    enabled: true
