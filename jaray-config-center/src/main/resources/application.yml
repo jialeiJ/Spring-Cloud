@@ -11,7 +11,7 @@ spring:
     config: 
       server:
         native:
-          #search-locations: ${user.home}/config,${user.home}/config/{application}
+          #search-locations: file:${user.home}/config,file:${user.home}/config/{application}
           search-locations: classpath:/config/{application}
           
 #配置注册中心
